@@ -1,5 +1,8 @@
 import netaddr
 
+from django.db import models, transaction
+from django.db.utils import DatabaseError
+from django.db.models.signals import post_save
 from django.contrib.auth.models import User
 from django.db import models
 from django.utils.translation import ugettext as _
@@ -65,3 +68,16 @@ class Credential(models.Model):
         permissions = (
             ("view_credential", "Can view credential"),
         )
+
+
+@transaction.commit_on_success
+def create_user_profile(sender, instance, created, **kwargs):
+    if created:
+        try:
+            AuthProfile.objects.create(
+               user=instance
+            )
+        except DatabaseError:
+            pass
+
+post_save.connect(create_user_profile, sender=User)
