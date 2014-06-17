@@ -32,4 +32,3 @@ SECRET_KEY = '%(SECRET_KEY)s'
         call_command('syncdb', database='default', interactive=False)
         call_command('migrate', database='default', interactive=False)
         call_command('createsuperuser', database='default', interactive=True)
-        call_command('createsecretkey', database='default', interactive=False)
